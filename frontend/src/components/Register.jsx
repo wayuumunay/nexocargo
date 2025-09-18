@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from 'axios';
+import api from '../api/axios'; // Corregimos la importación para usar nuestro archivo centralizado
 import EyeIcon from './EyeIcon';
 import EyeSlashIcon from './EyeSlashIcon';
 
@@ -42,7 +42,6 @@ const Register = () => {
             const { password2, ...dataToSend } = formData;
             await api.post('/api/users/register', dataToSend);
             
-            // --- LÓGICA DE MENSAJE CONDICIONAL ---
             if (dataToSend.tipo_de_usuario === 'conductor') {
                 alert('¡Usuario registrado exitosamente! Tu cuenta será revisada por un administrador antes de ser activada.');
             } else {
@@ -51,8 +50,17 @@ const Register = () => {
             
             window.location.reload();
         } catch (error) {
-            console.error('Error en el registro:', error.response.data);
-            alert(`Error: ${error.response.data.error || 'No se pudo completar el registro.'}`);
+            // --- MANEJO DE ERRORES MEJORADO ---
+            if (error.response) {
+                // El servidor respondió con un error (ej: email duplicado)
+                console.error('Error en el registro:', error.response.data);
+                // Muestra el mensaje de error específico del backend
+                alert(`Error: ${error.response.data.error || 'No se pudo completar el registro.'}`);
+            } else {
+                // El servidor no respondió o hubo un error de red (CORS, etc.)
+                console.error('Error de conexión:', error.message);
+                alert('No se pudo conectar con el servidor. Revisa la consola (F12) para más detalles.');
+            }
         }
     };
 
@@ -60,7 +68,6 @@ const Register = () => {
         <article>
             <header><h2>Registro</h2></header>
             <form onSubmit={onSubmit}>
-                {/* ... El resto del formulario JSX no cambia ... */}
                 <label htmlFor="nombre_completo">Nombre Completo</label>
                 <input type="text" name="nombre_completo" value={nombre_completo} onChange={onChange} required />
 
