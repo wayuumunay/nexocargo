@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from 'axios';
 
 const PaymentView = ({ userStatus }) => {
     // Leemos los datos desde las variables de entorno del frontend
@@ -17,7 +17,7 @@ const PaymentView = ({ userStatus }) => {
                 try {
                     const token = localStorage.getItem('token');
                     const config = { headers: { 'x-auth-token': token } };
-                    const res = await axios.get('http://localhost:3001/api/trips/my-pending-trip', config);
+                    const res = await api.get('/api/trips/my-pending-trip', config);
                     setPendingTrip(res.data);
                 } catch (error) {
                     console.error("Error al obtener el viaje pendiente", error);
@@ -37,7 +37,7 @@ const PaymentView = ({ userStatus }) => {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
             const body = { proofUrl };
-            await axios.post(`http://localhost:3001/api/trips/upload-proof/${pendingTrip.id}`, body, config);
+            await api.post(`/api/trips/upload-proof/${pendingTrip.id}`, body, config);
             alert('Comprobante enviado con éxito. Será revisado por un administrador.');
             window.location.reload();
         } catch (error) {

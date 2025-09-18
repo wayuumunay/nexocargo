@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from 'axios';
 import EyeIcon from './EyeIcon';
 import EyeSlashIcon from './EyeSlashIcon';
 
@@ -40,7 +40,7 @@ const Register = () => {
 
         try {
             const { password2, ...dataToSend } = formData;
-            await axios.post('http://localhost:3001/api/users/register', dataToSend);
+            await api.post('/api/users/register', dataToSend);
             
             // --- LÓGICA DE MENSAJE CONDICIONAL ---
             if (dataToSend.tipo_de_usuario === 'conductor') {

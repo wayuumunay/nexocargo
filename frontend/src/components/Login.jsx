@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ const Login = () => {
     const onSubmit = async e => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3001/api/users/login', formData);
+            const res = await api.post('/api/users/login', formData);
             
             const { token, user } = res.data;
             localStorage.setItem('token', token);

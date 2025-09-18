@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from 'axios';
 
 const Dashboard = () => {
     const [trips, setTrips] = useState([]);
@@ -10,7 +10,7 @@ const Dashboard = () => {
             try {
                 const token = localStorage.getItem('token');
                 const config = { headers: { 'x-auth-token': token } };
-                const res = await axios.get('http://localhost:3001/api/trips', config);
+                const res = await api.get('/api/trips', config);
                 setTrips(res.data);
             } catch (error) {
                 console.error('Error al obtener los viajes:', error.response ? error.response.data : error.message);
@@ -25,7 +25,7 @@ const Dashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/accept/${tripId}`, null, config);
+            await api.put(`/api/trips/accept/${tripId}`, null, config);
             alert('¡Viaje aceptado con éxito!');
             setTrips(trips.filter(trip => trip.id !== tripId));
         } catch (error) {
@@ -44,7 +44,7 @@ const Dashboard = () => {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
             const body = { newPrice };
-            await axios.put(`http://localhost:3001/api/trips/counter-offer/${tripId}`, body, config);
+            await api.put(`/api/trips/counter-offer/${tripId}`, body, config);
             alert('¡Contraoferta enviada!');
             setTrips(trips.filter(trip => trip.id !== tripId));
         } catch (error) {

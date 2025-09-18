@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from 'axios';
 
 const MyTrips = () => {
     const [myTrips, setMyTrips] = useState([]);
@@ -10,7 +10,7 @@ const MyTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            const res = await axios.get('http://localhost:3001/api/trips/my-trips', config);
+            const res = await api.get('/api/trips/my-trips', config);
             setMyTrips(res.data);
         } catch (error) {
             console.error('Error al obtener mis viajes:', error.response ? error.response.data : error.message);
@@ -27,7 +27,7 @@ const MyTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/accept-counter/${tripId}`, null, config);
+            await api.put(`/api/trips/accept-counter/${tripId}`, null, config);
             alert('¡Contraoferta aceptada! El viaje ha sido confirmado.');
             fetchMyTrips();
         } catch (error) {
@@ -40,7 +40,7 @@ const MyTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/reject-counter/${tripId}`, null, config);
+            await api.put(`/api/trips/reject-counter/${tripId}`, null, config);
             alert('Contraoferta rechazada. El viaje vuelve a estar disponible para otros conductores.');
             fetchMyTrips();
         } catch (error) {
@@ -54,7 +54,7 @@ const MyTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/cancel/client/${tripId}`, null, config);
+            await api.put(`/api/trips/cancel/client/${tripId}`, null, config);
             alert('Viaje cancelado.');
             fetchMyTrips();
         } catch (error) {
@@ -67,7 +67,7 @@ const MyTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/reassign/${tripId}`, null, config);
+            await api.put(`/api/trips/reassign/${tripId}`, null, config);
             alert('El viaje ha sido publicado nuevamente.');
             fetchMyTrips();
         } catch (error) {

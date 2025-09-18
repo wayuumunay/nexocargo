@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from 'axios';
 
 const AdminPanel = ({ adminKey }) => {
     const [pendingDrivers, setPendingDrivers] = useState([]);
@@ -14,9 +14,9 @@ const AdminPanel = ({ adminKey }) => {
         try {
             const config = { headers: { 'x-admin-key': adminKey } };
             const [driversRes, paymentsRes, usersRes] = await Promise.all([
-                axios.get('http://localhost:3001/api/admin/pending-drivers', config),
-                axios.get('http://localhost:3001/api/admin/pending-verifications', config),
-                axios.get('http://localhost:3001/api/admin/users', config) // Petición para la nueva lista
+                api.get('/api/admin/pending-drivers', config),
+                api.get('/api/admin/pending-verifications', config),
+                api.get('/api/admin/users', config) // Petición para la nueva lista
             ]);
             setPendingDrivers(driversRes.data);
             setPendingPayments(paymentsRes.data);
@@ -39,7 +39,7 @@ const AdminPanel = ({ adminKey }) => {
         if (!window.confirm(`¿Seguro que quieres aprobar al conductor con ID: ${driverId}?`)) return;
         try {
             const config = { headers: { 'x-admin-key': adminKey } };
-            await axios.put(`http://localhost:3001/api/admin/approve-driver/${driverId}`, null, config);
+            await api.put(`/api/admin/approve-driver/${driverId}`, null, config);
             alert('Conductor aprobado.');
             fetchData(); // Recargamos los datos
         } catch (error) {
@@ -51,7 +51,7 @@ const AdminPanel = ({ adminKey }) => {
         if (!window.confirm(`¿Seguro que quieres aprobar el pago del conductor con ID: ${driverId}?`)) return;
         try {
             const config = { headers: { 'x-admin-key': adminKey } };
-            await axios.put(`http://localhost:3001/api/admin/approve-payment/${driverId}`, null, config);
+            await api.put(`/api/admin/approve-payment/${driverId}`, null, config);
             alert('Pago aprobado.');
             fetchData(); // Recargamos los datos
         } catch (error) {
@@ -72,7 +72,7 @@ const AdminPanel = ({ adminKey }) => {
         try {
             const config = { headers: { 'x-admin-key': adminKey } };
             const body = { newPassword };
-            const res = await axios.put(`http://localhost:3001/api/admin/reset-password/${selectedUserId}`, body, config);
+            const res = await api.put(`/api/admin/reset-password/${selectedUserId}`, body, config);
             alert(res.data.message);
         } catch (error) {
             alert('Error al resetear la contraseña.');

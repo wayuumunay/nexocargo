@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from 'axios';
 
 const CreateTrip = () => {
     const [formData, setFormData] = useState({
@@ -24,7 +24,7 @@ const CreateTrip = () => {
         };
 
         try {
-            const res = await axios.post('http://localhost:3001/api/trips', formData, config);
+            const res = await api.post('/api/trips', formData, config);
             console.log(res.data);
             alert('¡Viaje publicado exitosamente!');
         } catch (error) {
