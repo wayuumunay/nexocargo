@@ -3,13 +3,15 @@ require('dotenv').config();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Configuración para producción (Railway)
+// Configuración para producción (Render/Railway)
 const connectionConfig = {
   connectionString: process.env.DATABASE_URL,
-  // Forzamos el uso de SSL
   ssl: {
     rejectUnauthorized: false
-  }
+  },
+  // --- LÍNEA AÑADIDA ---
+  // Forzamos el uso de IPv4
+  family: 4, 
 };
 
 // Configuración para desarrollo (tu PC)
