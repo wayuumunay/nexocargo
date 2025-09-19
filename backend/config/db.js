@@ -6,11 +6,10 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Configuración para producción (Railway)
 const connectionConfig = {
   connectionString: process.env.DATABASE_URL,
+  // Forzamos el uso de SSL
   ssl: {
     rejectUnauthorized: false
-  },
-  // --- LÍNEA AÑADIDA ---
-  timezone: 'UTC', 
+  }
 };
 
 // Configuración para desarrollo (tu PC)
@@ -20,8 +19,6 @@ const localConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    // --- LÍNEA AÑADIDA ---
-    timezone: 'UTC',
 };
 
 const pool = new Pool(isProduction ? connectionConfig : localConfig);

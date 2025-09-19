@@ -1,7 +1,7 @@
--- Borra las tablas si ya existen para empezar de cero (útil para pruebas)
+-- Borra las tablas en el orden correcto, manejando dependencias con CASCADE
 DROP TABLE IF EXISTS Vehiculos;
 DROP TABLE IF EXISTS Viajes;
-DROP TABLE IF EXISTS Usuarios;
+DROP TABLE IF EXISTS Usuarios CASCADE;
 
 -- Tabla de Usuarios
 -- Esta tabla almacenará la información tanto de clientes como de conductores.
