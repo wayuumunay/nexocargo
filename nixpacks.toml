@@ -1,9 +1,7 @@
-# Configuración explícita para Nixpacks (el sistema de Railway)
-
 [phases.build]
-# Le decimos que entre a la carpeta 'backend' y luego instale las dependencias
+# Entra a la carpeta 'backend' y luego instala las dependencias
 cmds = ["cd backend && npm install"]
 
 [start]
-# Le decimos que entre a la carpeta 'backend' y luego ejecute el comando de arranque
+# Entra a la carpeta 'backend' y luego ejecuta el comando de arranque
 cmd = "cd backend && npm start"
