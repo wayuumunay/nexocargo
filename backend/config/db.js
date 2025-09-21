@@ -3,14 +3,15 @@ require('dotenv').config();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Usamos la URL privada de Railway si existe, si no, la pública
+const connectionString = process.env.RAILWAY_PRIVATE_DATABASE_URL || process.env.DATABASE_URL;
+
 const connectionConfig = {
-  connectionString: process.env.DATABASE_URL,
-  // Forzamos el uso de SSL, requerido por la mayoría de BD en la nube
+  connectionString: connectionString,
   ssl: {
     rejectUnauthorized: false
   },
-  // Forzamos el uso de IPv4 para máxima compatibilidad
-  family: 4, 
+  family: 4, // Forzamos IPv4 para máxima compatibilidad
 };
 
 const localConfig = {
