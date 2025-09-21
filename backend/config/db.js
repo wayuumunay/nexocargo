@@ -3,15 +3,16 @@ require('dotenv').config();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Configuración para producción (Railway)
 const connectionConfig = {
-  connectionString: process.env.DATABASE_URL, // Railway provee esta variable
+  connectionString: process.env.DATABASE_URL,
+  // Forzamos el uso de SSL, requerido por la mayoría de BD en la nube
   ssl: {
     rejectUnauthorized: false
-  }
+  },
+  // Forzamos el uso de IPv4 para máxima compatibilidad
+  family: 4, 
 };
 
-// Configuración para desarrollo (tu PC)
 const localConfig = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -20,7 +21,6 @@ const localConfig = {
     database: process.env.DB_NAME,
 };
 
-// Usamos la configuración de producción si NODE_ENV es 'production', si no, la local.
 const pool = new Pool(isProduction ? connectionConfig : localConfig);
 
 module.exports = pool;
