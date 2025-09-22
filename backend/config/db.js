@@ -11,7 +11,7 @@ const connectionConfig = {
   ssl: {
     rejectUnauthorized: false
   },
-  family: 4, // Forzamos IPv4 para máxima compatibilidad
+  family: 6, // Forzamos IPv4 para máxima compatibilidad
 };
 
 const localConfig = {
