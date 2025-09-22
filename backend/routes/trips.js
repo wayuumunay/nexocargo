@@ -94,7 +94,7 @@ router.get('/my-pending-trip', auth, async (req, res) => {
 });
 
 
-// --- RUTAS POST y PUT ---
+// --- RUTAS POST y PUT :) ---
 router.post('/', auth, async (req, res) => {
     try {
         const { ubicacion_inicio, ubicacion_final, descripcion_carga, precio_ofrecido } = req.body;
