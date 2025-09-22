@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios'; // Cambiamos la importación
 
 const MyAcceptedTrips = () => {
     const [acceptedTrips, setAcceptedTrips] = useState([]);
@@ -10,7 +10,8 @@ const MyAcceptedTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            const res = await axios.get('http://localhost:3001/api/trips/my-accepted-trips', config);
+            // Usamos 'api' y una ruta relativa
+            const res = await api.get('/api/trips/my-accepted-trips', config);
             setAcceptedTrips(res.data);
         } catch (error) {
             console.error('Error al obtener los viajes aceptados:', error.response ? error.response.data : error.message);
@@ -30,7 +31,8 @@ const MyAcceptedTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/finish/${tripId}`, null, config);
+            // Usamos 'api' y una ruta relativa
+            await api.put(`/api/trips/finish/${tripId}`, null, config);
             alert('Viaje finalizado. Ahora debes reportar el pago de la comisión para poder aceptar nuevos viajes.');
             window.location.reload();
         } catch (error) {
@@ -44,9 +46,10 @@ const MyAcceptedTrips = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { 'x-auth-token': token } };
-            await axios.put(`http://localhost:3001/api/trips/cancel/driver/${tripId}`, null, config);
+            // Usamos 'api' y una ruta relativa
+            await api.put(`/api/trips/cancel/driver/${tripId}`, null, config);
             alert('Has cancelado el viaje.');
-            fetchAcceptedTrips(); // Recargamos la lista para que desaparezca de "Mis Viajes"
+            fetchAcceptedTrips(); // Recargamos la lista
         } catch (error) {
             alert('No se pudo cancelar el viaje.');
         }
