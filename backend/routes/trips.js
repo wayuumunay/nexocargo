@@ -32,7 +32,6 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-// GET /api/trips/my-trips (Para clientes, CON DATOS DEL CONDUCTOR)
 router.get('/my-trips', auth, async (req, res) => {
     try {
         const cliente_id = req.user.id;
@@ -54,7 +53,6 @@ router.get('/my-trips', auth, async (req, res) => {
     }
 });
 
-// GET /api/trips/my-accepted-trips (Para conductores, CON DATOS DEL CLIENTE)
 router.get('/my-accepted-trips', auth, async (req, res) => {
     try {
         const conductor_id = req.user.id;
@@ -94,7 +92,7 @@ router.get('/my-pending-trip', auth, async (req, res) => {
 });
 
 
-// --- RUTAS POST y PUT :) ---
+// --- RUTAS POST y PUT ---
 router.post('/', auth, async (req, res) => {
     try {
         const { ubicacion_inicio, ubicacion_final, descripcion_carga, precio_ofrecido } = req.body;
