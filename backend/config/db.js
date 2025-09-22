@@ -4,7 +4,7 @@ require('dotenv').config();
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Usamos la URL privada de Railway si existe, si no, la pública
-const connectionString = process.env.RAILWAY_PRIVATE_DATABASE_URL || process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
 
 const connectionConfig = {
   connectionString: connectionString,
