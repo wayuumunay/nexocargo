@@ -4,9 +4,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const auth = require('../middleware/auth');
-// Ya no se necesitan 'sendEmail' ni 'crypto'
 
-// @ruta   POST api/users/register
+// @ruta    POST api/users/register
+// @desc    Registra un nuevo usuario y lo loguea automáticamente
 router.post('/register', async (req, res) => {
     const client = await pool.connect();
     try {
@@ -35,9 +35,8 @@ router.post('/register', async (req, res) => {
         
         await client.query('BEGIN');
 
-        // Volvemos a la inserción simple, sin el token de verificación
         const newUserResult = await client.query(
-            'INSERT INTO usuarios (nombre_completo, email, password, telefono, tipo_de_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING id, email',
+            'INSERT INTO usuarios (nombre_completo, email, password, telefono, tipo_de_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING id, email, nombre_completo, tipo_de_usuario',
             [nombre_completo, email, hashedPassword, telefono, tipo_de_usuario]
         );
         const newUser = newUserResult.rows[0];
@@ -52,23 +51,45 @@ router.post('/register', async (req, res) => {
         }
         
         await client.query('COMMIT');
+
+        // ---- MEJORA: Inicio de sesión automático ----
+        // Crear el payload para el token
+        const payload = { user: { id: newUser.id } };
+
+        // Firmar y generar el token
+        const token = jwt.sign(
+            payload, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+        
+        // Enviar la respuesta con el token y los datos del usuario
         res.status(201).json({ 
-            message: 'Registro exitoso.', // Mensaje simplificado
-            user: newUser 
+            message: 'Registro e inicio de sesión exitosos.',
+            token: token,
+            user: {
+                id: newUser.id,
+                nombre_completo: newUser.nombre_completo,
+                email: newUser.email,
+                tipo_de_usuario: newUser.tipo_de_usuario
+            }
         });
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error(error.message);
-        res.status(500).send(error.message || 'Error en el servidor');
+        
+        // ---- MEJORA: Manejo de error seguro ----
+        console.error('Error en el registro:', error); // Loguea el error completo para ti en el servidor
+        // Envía una respuesta genérica y segura al cliente
+        res.status(500).json({ error: 'Ocurrió un error inesperado al procesar el registro.' });
+
     } finally {
         client.release();
     }
 });
 
-// La ruta GET /verify/:token ha sido eliminada.
-
-// @ruta   POST api/users/login
+// @ruta    POST api/users/login
+// @desc    Inicia sesión de un usuario existente
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -77,8 +98,6 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Credenciales inválidas.' });
         }
         const user = userResult.rows[0];
-        
-        // Se elimina el chequeo de 'is_email_verified'
         
         if (user.tipo_de_usuario === 'conductor' && user.estado_conductor === 'pendiente_aprobacion') {
             return res.status(403).json({ error: 'Tu cuenta de conductor está pendiente de aprobación por un administrador.' });
@@ -102,12 +121,13 @@ router.post('/login', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).send('Error en el servidor');
+        console.error('Error en el login:', error);
+        res.status(500).json({ error: 'Error en el servidor.' }); // También mejorado aquí por consistencia
     }
 });
 
-// @ruta   GET api/users/me
+// @ruta    GET api/users/me
+// @desc    Obtiene los datos del usuario autenticado
 router.get('/me', auth, async (req, res) => {
     try {
         const user = await pool.query('SELECT id, nombre_completo, email, telefono, tipo_de_usuario, estado_conductor FROM usuarios WHERE id = $1', [req.user.id]);
