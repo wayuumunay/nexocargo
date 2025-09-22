@@ -1,27 +1,23 @@
 const { Pool } = require('pg');
+
+// Carga las variables de entorno desde el archivo .env para desarrollo local
 require('dotenv').config();
 
-const isProduction = process.env.NODE_ENV === 'production';
-
-// Usamos la URL privada de Railway si existe, si no, la pública
-const connectionString = process.env.DATABASE_URL;
-
-const connectionConfig = {
-  connectionString: connectionString,
+// Esta configuración unificada funciona tanto en local como en producción (Railway)
+const pool = new Pool({
+  // Railway provee estas variables automáticamente.
+  // En tu computadora, las tomará de tu archivo .env.
+  host: process.env.PGHOST,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  database: process.env.PGDATABASE,
+  port: process.env.PGPORT,
+  
+  // La configuración SSL es necesaria para la conexión en producción en Railway.
+  // No afectará tu conexión local si no la tienes configurada para usar SSL.
   ssl: {
     rejectUnauthorized: false
-  },
-  family: 6, // Forzamos IPv4 para máxima compatibilidad
-};
-
-const localConfig = {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-};
-
-const pool = new Pool(isProduction ? connectionConfig : localConfig);
+  }
+});
 
 module.exports = pool;
