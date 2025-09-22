@@ -54,7 +54,7 @@ router.get('/my-trips', auth, async (req, res) => {
     }
 });
 
-// GET /api/trips/my-accepted-trips (Para conductores, CON DATOS DEL CLIENTES)
+// GET /api/trips/my-accepted-trips (Para conductores, CON DATOS DEL CLIENTE)
 router.get('/my-accepted-trips', auth, async (req, res) => {
     try {
         const conductor_id = req.user.id;
